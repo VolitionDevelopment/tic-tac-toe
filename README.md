@@ -5,4 +5,4 @@ A simple tic-tac-toe game
 - Detects winning combinations!
 - Computer plays O
 
-![alt text](http://i.imgur.com/VSYYwbN.png Tic-tac-toe)
+![alt text](http://i.imgur.com/WGCKjKv.png Tic-tac-toe)

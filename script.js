@@ -16,21 +16,83 @@ function markSquare(square){
         if(square.innerHTML === "-") {
             if (turn % 2 == 0) {
                 square.innerHTML = "X";
-                ai();
                 update();
+                ai();
             }
         }
     }
 }
 
 function ai(){
-    var square = Math.floor(Math.random() * 9) + 1;
+    if(!winner){
+        if(element(5).innerHTML === "-"){
+            element(5).innerHTML = "O";
+            update();
+        }else{
+            for(var i = 0; i < winningSolutions.length; i++){
+                if(element(winningSolutions[i][0]).innerHTML === element(winningSolutions[i][1]).innerHTML){
+                    if(element(winningSolutions[i][0]).innerHTML === "-"){
+                        continue;
+                    }
 
-    if(element(square).innerHTML === "-"){
-        element(square).innerHTML = "O";
-        update();
-    }else{
-        ai();
+                    if(element(winningSolutions[i][2]).innerHTML !== "-"){
+                        continue;
+                    }
+
+                    element(winningSolutions[i][2]).innerHTML = "O";
+                    update();
+                    return;
+                }
+
+                if(element(winningSolutions[i][1]).innerHTML === element(winningSolutions[i][2]).innerHTML){
+                    if(element(winningSolutions[i][1]).innerHTML === "-"){
+                        continue;
+                    }
+
+                    if(element(winningSolutions[i][0]).innerHTML !== "-"){
+                        continue;
+                    }
+
+                    element(winningSolutions[i][0]).innerHTML = "O";
+                    update();
+                    return;
+                }
+
+                if(element(winningSolutions[i][2]).innerHTML === element(winningSolutions[i][0]).innerHTML){
+                    if(element(winningSolutions[i][2]).innerHTML === "-"){
+                        continue;
+                    }
+
+                    if(element(winningSolutions[i][1]).innerHTML !== "-"){
+                        continue;
+                    }
+
+                    element(winningSolutions[i][1]).innerHTML = "O";
+                    update();
+                    return;
+                }
+            }
+
+            var corners = [1, 3, 7, 9];
+            for (var i = 0; i < corners.length; i++) {
+                var obj = corners[i];
+
+                if(element(obj).innerHTML === "-"){
+                    element(obj).innerHTML = "O";
+                    update();
+                    return;
+                }
+            }
+
+            var square = Math.floor(Math.random() * 9) + 1;
+
+            if(element(square).innerHTML === "-"){
+                element(square).innerHTML = "O";
+                update();
+            }else{
+                ai();
+            }
+        }
     }
 }
 

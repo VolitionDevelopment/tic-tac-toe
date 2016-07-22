@@ -1,5 +1,5 @@
 var turn = 0;
-var winner = false;
+var gameEnded = false;
 var players = 1;
 var moves = [];
 var winningSolutions = [
@@ -30,13 +30,13 @@ function setPlayers(num){
 }
 
 function markSquare(square){
-    if(!winner){
+    if(!gameEnded){
         if(square.innerHTML === "-") {
             if (turn % 2 == 0) {
                 square.innerHTML = "X";
                 moves.push(square.id);
                 update();
-                if(players === 1 && !winner){
+                if(players === 1 && !gameEnded){
                     aiLearning();
                 }
             }else{
@@ -164,7 +164,7 @@ function aiLearning(){
 }
 
 function aiHeuristics(){
-    if(!winner){
+    if(!gameEnded){
         if(element(5).innerHTML === "-"){
             element(5).innerHTML = "O";
             moves.push(5);
@@ -270,16 +270,17 @@ function update(){
                 highlight(obj);
             }
 
-            winner = true;
+            gameEnded = true;
             return;
         }
     }
 
     turn++;
 
-    if(turn === 9 && !winner){
+    if(turn === 9 && !gameEnded){
         element("turn").innerHTML = "END GAME";
         sendData(moves.join() + " TIE");
+        gameEnded = true;
     }
 }
 

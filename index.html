@@ -9,10 +9,12 @@
 
 <div class="title-wrapper">
     <h1>Tic Tac Toe</h1>
+    <button onclick="setPlayers(1)" class="player-buttons">One Player</button>
+    <button onclick="setPlayers(2)" class="player-buttons">Two Players</button>
     <h6><span id="turn"></span></h6>
 </div>
 
-<div class="game-wrapper">
+<div class="game-wrapper hidden">
     <div class="board-row" id="row-1">
         <button class="box" onclick="markSquare(this);" id="1">-</button>
         <button class="box" onclick="markSquare(this);" id="2">-</button>

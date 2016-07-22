@@ -36,7 +36,7 @@ function markSquare(square){
                 square.innerHTML = "X";
                 moves.push(square.id);
                 update();
-                if(players === 1){
+                if(players === 1 && !winner){
                     aiLearning();
                 }
             }else{
@@ -50,16 +50,19 @@ function markSquare(square){
 function choosePossibleMove(not){
     var possibleMove = Math.floor(Math.random() * 9) + 1;
 
-    if(element(possibleMove).innerHTML !== "-"){
-        choosePossibleMove();
-    }
-
     if(not != undefined){
-        if(possibleMove === not){
-            choosePossibleMove(not);
+        for(var i = 0; i < not.length; i++){
+            if(not[i] === possibleMove){
+                choosePossibleMove(not);
+            }
         }
     }
 
+    if(element(possibleMove).innerHTML !== "-"){
+        choosePossibleMove(not);
+    }
+
+    console.log(element(possibleMove).innerHTML);
     return possibleMove;
 }
 
@@ -78,9 +81,21 @@ function getTxt(){
         games.push([obj.split(" ")[0], obj.split(" ")[1]]);
     }
 
-    console.log(games);
-
     return games;
+}
+
+function matchingArray(arr1, arr2, point){
+    if(arr1.length < point || arr2.length < point){
+        return false;
+    }
+
+    for(var i = 0; i < Math.min(arr1.length, arr2.length); i++){
+        if(arr1[i] !== arr2[i]){
+            return false;
+        }
+    }
+
+    return true;
 }
 
 function aiLearning(){
@@ -92,44 +107,66 @@ function aiLearning(){
     for (var i = 0; i < games.length; i++) {
         var game = games[i];
 
-        for (var j = 0; j < game.length; j++) {
-            var move = game[0].split(",");
-            var result = game[1];
+        var move = game[0].split(",");
+        var result = game[1];
 
-            for (var k = 0; k < move.length; k++) {
-                var knownMove = move[k];
+        if(matchingArray(moves, move)){
+            if(result === "WON"){
+                winningPaths.push(game);
+            }
 
+            if(result === "TIE"){
+                tiePaths.push(game);
+            }
 
-                if(moves[turn - 1] === knownMove){
-                    if(result === "WON"){
-                        winningPaths.push(game);
-                    }
-
-                    if(result === "TIE"){
-                        tiePaths.push(game);
-                    }
-
-                    if(result === "LOSS"){
-                        lossPaths.push(game);
-                    }
-                }
+            if(result === "LOSS"){
+                lossPaths.push(game);
             }
         }
     }
 
     if(winningPaths.length > 0){
-        var randMove = Math.floor(Math.random() * winningPaths.length) + 1;
-        element(randMove).innerHTML = "O";
-        moves.push(randMove);
-        update();
         console.log("Winning move found. Selecting random winning move.");
+
+        console.log(winningPaths);
+        var chosenMove = winningPaths[0][0].split(",")[turn];
+
+        console.log(chosenMove);
+        element(chosenMove).innerHTML = "O";
+        moves.push(chosenMove);
+
+        update();
+
         return;
     }else if(tiePaths.length > 0){
-        var randMove = Math.floor(Math.random() * tiePaths.length) + 1;
+        console.log("Tie move found. Selecting random tie move.");
+        console.log(tiePaths);
+        var chosenMove = tiePaths[0][0].split(",")[turn];
+
+        console.log(chosenMove);
+        element(chosenMove).innerHTML = "O";
+        moves.push(chosenMove);
+        update();
+
+        return;
+    }else if(lossPaths.length > 0){
+        console.log("Loss move found. Avoiding losing path.");
+        console.log(lossPaths);
+
+        var losingMoves = lossPaths[0][0].split(",");
+        console.log(losingMoves);
+
+        var randMove = choosePossibleMove(losingMoves);
+
+        while(element(randMove).innerHTML !== "-"){
+            randMove = choosePossibleMove(losingMoves);
+        }
+
         element(randMove).innerHTML = "O";
         moves.push(randMove);
+        console.log(randMove);
         update();
-        console.log("Tie move found. Selecting random winning move.");
+
         return;
     }
 
@@ -137,7 +174,7 @@ function aiLearning(){
     aiHeuristics();
 }
 
-function aiHeuristics(not){
+function aiHeuristics(){
     if(!winner){
         if(element(5).innerHTML === "-"){
             element(5).innerHTML = "O";
@@ -227,10 +264,16 @@ function update(){
 
             if(turn % 2 === 0){
                 element("turn").innerHTML = "WINNER: X";
-                sendData(moves.join() + " LOSS");
+
+                if(players === 1) {
+                    sendData(moves.join() + " LOSS");
+                }
             }else{
                 element("turn").innerHTML = "WINNER: 0";
-                sendData(moves.join() + " WON");
+
+                if(players === 1) {
+                    sendData(moves.join() + " WON");
+                }
             }
 
             for (var j = 0; j < winningSolutions[i].length; j++) {
@@ -239,7 +282,7 @@ function update(){
             }
 
             winner = true;
-
+            return;
         }
     }
 

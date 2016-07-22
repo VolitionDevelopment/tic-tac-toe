@@ -1,5 +1,4 @@
 .title-wrapper{
-    padding: 30px;
     text-align: center;
     margin: 0 auto;
     max-width: 640px;
@@ -14,6 +13,25 @@
     min-width: 320px;
     width: 75%;
     margin: auto;
+}
+
+.hidden{
+    display: none;
+}
+
+.player-buttons{
+    width: 200px;
+    height: 100px;
+    font-size: 30px;
+    background-color: #167ac6;
+    border: none;
+    color: white;
+    border-radius: 10px;
+    transition: all 0.3s;
+}
+
+.player-buttons:hover{
+    background-color: #1660a9;
 }
 
 .board-row{

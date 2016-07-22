@@ -62,7 +62,6 @@ function choosePossibleMove(not){
         choosePossibleMove(not);
     }
 
-    console.log(element(possibleMove).innerHTML);
     return possibleMove;
 }
 
@@ -127,11 +126,8 @@ function aiLearning(){
 
     if(winningPaths.length > 0){
         console.log("Winning move found. Selecting random winning move.");
-
-        console.log(winningPaths);
         var chosenMove = winningPaths[0][0].split(",")[turn];
 
-        console.log(chosenMove);
         element(chosenMove).innerHTML = "O";
         moves.push(chosenMove);
 
@@ -140,10 +136,8 @@ function aiLearning(){
         return;
     }else if(tiePaths.length > 0){
         console.log("Tie move found. Selecting random tie move.");
-        console.log(tiePaths);
         var chosenMove = tiePaths[0][0].split(",")[turn];
 
-        console.log(chosenMove);
         element(chosenMove).innerHTML = "O";
         moves.push(chosenMove);
         update();
@@ -151,11 +145,7 @@ function aiLearning(){
         return;
     }else if(lossPaths.length > 0){
         console.log("Loss move found. Avoiding losing path.");
-        console.log(lossPaths);
-
         var losingMoves = lossPaths[0][0].split(",");
-        console.log(losingMoves);
-
         var randMove = choosePossibleMove(losingMoves);
 
         while(element(randMove).innerHTML !== "-"){
@@ -164,7 +154,6 @@ function aiLearning(){
 
         element(randMove).innerHTML = "O";
         moves.push(randMove);
-        console.log(randMove);
         update();
 
         return;

@@ -38,6 +38,10 @@ function markSquare(square){
                 update();
                 if(players === 1 && !gameEnded){
                     aiLearning();
+                    // var heuristic = aiHeuristics();
+                    // element(heuristic).innerHTML = "O";
+                    // moves.push(heuristic);
+                    // update();
                 }
             }else{
                 square.innerHTML = "O";
@@ -88,8 +92,8 @@ function matchingArray(arr1, arr2, point){
         return false;
     }
 
-    for(var i = 0; i < Math.min(arr1.length, arr2.length); i++){
-        if(arr1[i] !== arr2[i]){
+    for(var i = 0; i < point; i++){
+        if(arr1[i] != arr2[i]){
             return false;
         }
     }
@@ -99,7 +103,6 @@ function matchingArray(arr1, arr2, point){
 
 function aiLearning(){
     var games = getTxt();
-    var winningPaths = [];
     var tiePaths = [];
     var lossPaths = [];
 
@@ -109,11 +112,7 @@ function aiLearning(){
         var move = game[0].split(",");
         var result = game[1];
 
-        if(matchingArray(moves, move)){
-            if(result === "WON"){
-                winningPaths.push(game);
-            }
-
+        if(matchingArray(moves, move, turn)){
             if(result === "TIE"){
                 tiePaths.push(game);
             }
@@ -124,51 +123,46 @@ function aiLearning(){
         }
     }
 
-    if(winningPaths.length > 0){
-        console.log("Winning move found. Selecting random winning move.");
-        var chosenMove = winningPaths[0][0].split(",")[turn];
-
-        element(chosenMove).innerHTML = "O";
-        moves.push(chosenMove);
-
-        update();
-
-        return;
-    }else if(tiePaths.length > 0){
+    if(tiePaths.length > 0) {
         console.log("Tie move found. Selecting random tie move.");
         var chosenMove = tiePaths[0][0].split(",")[turn];
 
         element(chosenMove).innerHTML = "O";
         moves.push(chosenMove);
-        update();
 
+        update();
         return;
     }else if(lossPaths.length > 0){
         console.log("Loss move found. Avoiding losing path.");
-        var losingMoves = lossPaths[0][0].split(",");
-        var randMove = choosePossibleMove(losingMoves);
 
-        while(element(randMove).innerHTML !== "-"){
-            randMove = choosePossibleMove(losingMoves);
+        var nextTurnLosses = [];
+
+        for(var i = 0; i < lossPaths.length; i++){
+            nextTurnLosses.push(lossPaths[i][0].split(",")[turn]);
         }
 
-        element(randMove).innerHTML = "O";
-        moves.push(randMove);
+        var solution = aiHeuristics(nextTurnLosses);
+
+        element(solution).innerHTML = "O";
+        moves.push(solution);
         update();
 
         return;
     }
 
     console.log("No successful move found. Falling back to AI heuristics");
-    aiHeuristics();
+    var heuristic = aiHeuristics();
+    element(heuristic).innerHTML = "O";
+    moves.push(heuristic);
+    update();
 }
 
-function aiHeuristics(){
+function aiHeuristics(exception){
+    var possibleMove = 0;
+
     if(!gameEnded){
         if(element(5).innerHTML === "-"){
-            element(5).innerHTML = "O";
-            moves.push(5);
-            update();
+            possibleMove = 5;
         }else{
             for(var i = 0; i < winningSolutions.length; i++){
                 if(element(winningSolutions[i][0]).innerHTML === element(winningSolutions[i][1]).innerHTML){
@@ -180,10 +174,8 @@ function aiHeuristics(){
                         continue;
                     }
 
-                    element(winningSolutions[i][2]).innerHTML = "O";
-                    moves.push(winningSolutions[i][2]);
-                    update();
-                    return;
+                    console.log("Blocking");
+                    return winningSolutions[i][2];
                 }
 
                 if(element(winningSolutions[i][1]).innerHTML === element(winningSolutions[i][2]).innerHTML){
@@ -195,10 +187,8 @@ function aiHeuristics(){
                         continue;
                     }
 
-                    element(winningSolutions[i][0]).innerHTML = "O";
-                    moves.push(winningSolutions[i][0]);
-                    update();
-                    return;
+                    console.log("Blocking");
+                    return winningSolutions[i][0];
                 }
 
                 if(element(winningSolutions[i][2]).innerHTML === element(winningSolutions[i][0]).innerHTML){
@@ -210,11 +200,17 @@ function aiHeuristics(){
                         continue;
                     }
 
-                    element(winningSolutions[i][1]).innerHTML = "O";
-                    moves.push(winningSolutions[i][1]);
-                    update();
-                    return;
+                    console.log("Blocking");
+                    return winningSolutions[i][1];
                 }
+            }
+
+            var square = Math.floor(Math.random() * 9) + 1;
+
+            if(element(square).innerHTML === "-"){
+                possibleMove = square;
+            }else{
+                aiHeuristics();
             }
 
             var corners = [1, 3, 7, 9];
@@ -222,23 +218,19 @@ function aiHeuristics(){
                 var obj = corners[i];
 
                 if(element(obj).innerHTML === "-"){
-                    element(obj).innerHTML = "O";
-                    moves.push(obj);
-                    update();
-                    return;
+                    possibleMove = obj;
                 }
             }
 
-            var square = Math.floor(Math.random() * 9) + 1;
 
-            if(element(square).innerHTML === "-"){
-                element(square).innerHTML = "O";
-                moves.push(square);
-                update();
-            }else{
-                aiHeuristics();
-            }
         }
+
+        if(exception.indexOf(possibleMove) > -1){
+            console.log("Move results in loss. Finding new move...");
+            aiHeuristics(exception);
+        }
+
+        return possibleMove;
     }
 }
 
@@ -259,10 +251,6 @@ function update(){
                 }
             }else{
                 element("turn").innerHTML = "WINNER: 0";
-
-                if(players === 1) {
-                    sendData(moves.join() + " WON");
-                }
             }
 
             for (var j = 0; j < winningSolutions[i].length; j++) {

@@ -1,38 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Tic Tac Toe</title>
-    <link href="styles.css" rel="stylesheet">
+	<title>Tic Tac Toe using native JavaScript</title>
+
+	<link rel="stylesheet" type="text/css" href="http://meyerweb.com/eric/tools/css/reset/reset.css">
+	<link rel="stylesheet" type="text/css" href="styles.css">
+
 </head>
 <body>
 
 <div class="title-wrapper">
-    <h1>Tic Tac Toe</h1>
-    <button onclick="setPlayers(1)" class="player-buttons">One Player</button>
-    <button onclick="setPlayers(2)" class="player-buttons">Two Players</button>
-    <h6><span id="turn"></span></h6>
+	<h1>TIC TAC TOE</h1>
+	<h2 id="message"></h2>
 </div>
 
-<div class="game-wrapper hidden">
-    <div class="board-row" id="row-1">
-        <button class="box" onclick="markSquare(this);" id="1">-</button>
-        <button class="box" onclick="markSquare(this);" id="2">-</button>
-        <button class="box" onclick="markSquare(this);" id="3">-</button>
-    </div>
-    <div class="board-row" id="row-2">
-        <button class="box" onclick="markSquare(this);" id="4">-</button>
-        <button class="box" onclick="markSquare(this);" id="5">-</button>
-        <button class="box" onclick="markSquare(this);" id="6">-</button>
-    </div>
-    <div class="board-row" id="row-3">
-        <button class="box" onclick="markSquare(this);" id="7">-</button>
-        <button class="box" onclick="markSquare(this);" id="8">-</button>
-        <button class="box" onclick="markSquare(this);" id="9">-</button>
-    </div>
+<div class="game-wrapper">
+
+	<div class="board-row-1 board-row">
+		<button id="A1" class="box">-</button>
+		<button id="A2" class="box">-</button>
+		<button id="A3" class="box">-</button>
+	</div>
+	<div class="board-row-2 board-row">
+		<button id="B1" class="box">-</button>
+		<button id="B2" class="box">-</button>
+		<button id="B3" class="box">-</button>
+	</div>
+	<div class="board-row-3 board-row">
+		<button id="C1" class="box">-</button>
+		<button id="C2" class="box">-</button>
+		<button id="C3" class="box">-</button>
+	</div>
+
 </div>
 
-<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-<script src="script.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script type="text/javascript" src="scripts.js"></script>
 </body>
 </html>
